@@ -1,0 +1,12 @@
+applications:
+  - name: pharma
+    path: target/pharma.jar
+    memory: 512M
+    disk_quota: 512M
+    instances: 1
+    buildpacks:
+      - sap_java_buildpack_jakarta
+    env:
+      JBP_CONFIG_OPEN_JDK_JRE: '{ jre: { version: 17.+ } }'
+    health-check-type: http
+    health-check-http-endpoint: /actuator/health
