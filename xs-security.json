@@ -1,0 +1,41 @@
+{
+  "xsappname": "pharma",
+  "tenant-mode": "dedicated",
+  "oauth2-configuration": {
+    "redirect-uris": [
+      "https://pharma-approuter.cfapps.us10-001.hana.ondemand.com/**"
+    ]
+  },
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.read",
+      "description": "Permiso de lectura"
+    },
+    {
+      "name": "$XSAPPNAME.write",
+      "description": "Permiso de escritura"
+    }
+  ],
+  "role-templates": [
+    {
+      "name": "Viewer",
+      "description": "Solo lectura",
+      "scope-references": ["$XSAPPNAME.read"]
+    },
+    {
+      "name": "Admin",
+      "description": "Lectura y escritura",
+      "scope-references": ["$XSAPPNAME.read", "$XSAPPNAME.write"]
+    }
+  ],
+  "role-collections": [
+    {
+      "name": "Pharma Viewer",
+      "role-template-references": ["$XSAPPNAME.Viewer"]
+    },
+    {
+      "name": "Pharma Admin",
+      "role-template-references": ["$XSAPPNAME.Admin"]
+    }
+  ]
+}

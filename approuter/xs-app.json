@@ -1,0 +1,22 @@
+{
+  "welcomeFile": "/index.html",
+  "authenticationMethod": "route",
+  "routes": [
+    {
+      "source": "^/gettoken$",
+      "target": "/api/token",
+      "destination": "pharma-backend",
+      "authenticationType": "xsuaa"
+    },
+    {
+      "source": "^/index.html$",
+      "localDir": ".",
+      "authenticationType": "none"
+    },
+    {
+      "source": "^/$",
+      "localDir": ".",
+      "authenticationType": "none"
+    }
+  ]
+}

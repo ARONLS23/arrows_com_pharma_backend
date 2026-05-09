@@ -20,6 +20,7 @@ public class DemoController {
         response.put("timestamp", LocalDateTime.now().toString());
         return ResponseEntity.ok(response);
     }
+
     @GetMapping("/info")
     public ResponseEntity<Map<String, Object>> info() {
         Map<String, Object> response = new HashMap<>();
@@ -33,11 +34,24 @@ public class DemoController {
         ));
         return ResponseEntity.ok(response);
     }
+
     @PostMapping("/echo")
     public ResponseEntity<Map<String, Object>> echo(@RequestBody Map<String, Object> body) {
         Map<String, Object> response = new HashMap<>();
         response.put("received", body);
         response.put("timestamp", LocalDateTime.now().toString());
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/token")
+    public ResponseEntity<Map<String, Object>> getToken(
+            @RequestHeader("Authorization") String authHeader) {
+
+        String token = authHeader.replace("Bearer ", "");
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("token", token);
+        response.put("usage", "Copia el token y úsalo en Postman: Authorization: Bearer <token>");
         return ResponseEntity.ok(response);
     }
 }

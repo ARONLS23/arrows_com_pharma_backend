@@ -8,5 +8,26 @@ applications:
       - sap_java_buildpack_jakarta
     env:
       JBP_CONFIG_OPEN_JDK_JRE: '{ jre: { version: 17.+ } }'
+      SPRING_PROFILES_ACTIVE: cloud
     health-check-type: http
     health-check-http-endpoint: /actuator/health
+    services:
+      - pharma-xsuaa
+
+  - name: pharma-approuter
+    path: approuter
+    memory: 256M
+    instances: 1
+    buildpacks:
+      - nodejs_buildpack
+    env:
+      destinations: >
+        [
+          {
+            "name": "pharma-backend",
+            "url": "https://pharma.cfapps.us10-001.hana.ondemand.com",
+            "forwardAuthToken": true
+          }
+        ]
+    services:
+      - pharma-xsuaa
