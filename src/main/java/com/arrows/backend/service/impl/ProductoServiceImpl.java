@@ -2,11 +2,14 @@ package com.arrows.backend.service.impl;
 
 import com.arrows.backend.domain.Categoria;
 import com.arrows.backend.domain.Producto;
+import com.arrows.backend.domain.Proveedor;
 import com.arrows.backend.dto.Producto.ProductoRequest;
 import com.arrows.backend.dto.Producto.ProductoResponse;
+import com.arrows.backend.dto.Proveedor.ProveedorResumen;
 import com.arrows.backend.enums.EstadoEnum;
 import com.arrows.backend.repository.CategoriaRepository;
 import com.arrows.backend.repository.ProductoRepository;
+import com.arrows.backend.repository.ProveedorRepository;
 import com.arrows.backend.service.ProductoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +21,7 @@ import java.util.List;
 public class ProductoServiceImpl implements ProductoService {
     private final ProductoRepository productoRepository;
     private final CategoriaRepository categoriaRepository;
+    private final ProveedorRepository proveedorRepository;
 
     @Override
     public List<ProductoResponse> findAll() {
@@ -41,12 +45,15 @@ public class ProductoServiceImpl implements ProductoService {
         Categoria categoria = categoriaRepository.findById(request.getCategoriaId())
                 .orElseThrow(() -> new RuntimeException("Categoría no encontrada con id: " + request.getCategoriaId()));
 
+        List<Proveedor> proveedores = proveedorRepository.findAllById(request.getProveedorIds());
+
         Producto producto = Producto.builder()
                 .nombre(request.getNombre())
                 .descripcion(request.getDescripcion())
                 .precio(request.getPrecio())
                 .stock(request.getStock())
                 .categoria(categoria)
+                .proveedores(proveedores)
                 .estado(EstadoEnum.ACTIVO)
                 .build();
 
@@ -59,11 +66,14 @@ public class ProductoServiceImpl implements ProductoService {
         Categoria categoria = categoriaRepository.findById(request.getCategoriaId())
                 .orElseThrow(() -> new RuntimeException("Categoría no encontrada con id: " + request.getCategoriaId()));
 
+        List<Proveedor> proveedores = proveedorRepository.findAllById(request.getProveedorIds());
+
         producto.setNombre(request.getNombre());
         producto.setDescripcion(request.getDescripcion());
         producto.setPrecio(request.getPrecio());
         producto.setStock(request.getStock());
         producto.setCategoria(categoria);
+        producto.setProveedores(proveedores);
 
         return toResponse(productoRepository.save(producto));
     }
@@ -81,6 +91,14 @@ public class ProductoServiceImpl implements ProductoService {
     }
 
     private ProductoResponse toResponse(Producto p) {
+        List<ProveedorResumen> proveedores = p.getProveedores().stream()
+                .map(prov -> ProveedorResumen.builder()
+                        .id(prov.getId())
+                        .nombre(prov.getNombre())
+                        .ruc(prov.getRuc())
+                        .build())
+                .toList();
+
         return ProductoResponse.builder()
                 .id(p.getId())
                 .nombre(p.getNombre())
@@ -89,6 +107,7 @@ public class ProductoServiceImpl implements ProductoService {
                 .stock(p.getStock())
                 .categoriaId(p.getCategoria().getId())
                 .categoriaNombre(p.getCategoria().getNombre())
+                .proveedores(proveedores)
                 .estado(p.getEstado())
                 .build();
     }

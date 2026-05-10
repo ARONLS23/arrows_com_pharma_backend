@@ -4,6 +4,8 @@ import jakarta.validation.constraints.*;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 public class ProductoRequest {
@@ -24,4 +26,6 @@ public class ProductoRequest {
 
     @NotNull(message = "La categoría es obligatoria")
     private Long categoriaId;
+
+    private List<Long> proveedorIds = new ArrayList<>();
 }

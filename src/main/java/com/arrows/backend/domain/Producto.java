@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "productos")
@@ -39,4 +41,12 @@ public class Producto {
     @Column(nullable = false)
     @Builder.Default
     private EstadoEnum estado = EstadoEnum.ACTIVO;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "proveedor_producto",
+            joinColumns = @JoinColumn(name = "producto_id"),
+            inverseJoinColumns = @JoinColumn(name = "proveedor_id")
+    )
+    private List<Proveedor> proveedores = new ArrayList<>();
 }
